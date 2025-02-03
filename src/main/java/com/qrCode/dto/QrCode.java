@@ -12,7 +12,7 @@ public class QrCode {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column
+	@Column(columnDefinition="nvarchar(max)")
 	private String desiredUrl;
 	
 	@Column
