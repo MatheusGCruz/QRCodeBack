@@ -10,6 +10,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.zxing.BarcodeFormat;
@@ -21,11 +22,15 @@ import com.qrCode.dto.QrCode;
 import com.qrCode.repository.QrCodeRepository;
 import com.qrCode.utils.StringUtils;
 
+
+
 @Service
 public class QrCodeService {
 	
 	@Autowired 	public QrCodeRepository qrCodeRepository;
 	@Autowired	public StringUtils 		stringUtils;
+	
+	@Value("${QR_CODE_BASE_URL}")		private String baseUrl;
 	
     public QrCode upsertQrCode(String desiredUrl) {
     	List<QrCode> qrCodeList = qrCodeRepository.findAllByDesiredUrl(desiredUrl);
@@ -49,8 +54,7 @@ public class QrCodeService {
     
     private QrCode generateQRCode(String desiredUrl, int width, int height) {
         try {
-        	QrCode newQrCode = generateQrCode();
-        	
+        	QrCode newQrCode = generateQrCode();       	
         	
             QRCodeWriter qrCodeWriter = new QRCodeWriter();
             BitMatrix bitMatrix = qrCodeWriter.encode(newQrCode.getPinCode(), BarcodeFormat.QR_CODE, width, height);
@@ -90,7 +94,7 @@ public class QrCodeService {
     private String generatePinCode() {
         String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder pinCode = new StringBuilder();
-        pinCode.append(stringUtils.getBaseUrl());
+        pinCode.append(baseUrl);
         Random random = new Random();
         for (int i = 0; i < 7; i++) {
             pinCode.append(chars.charAt(random.nextInt(chars.length())));
